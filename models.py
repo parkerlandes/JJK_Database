@@ -27,11 +27,15 @@ class Arc(Base):
     series_id = Column(Integer, ForeignKey("series.series_id"), nullable=False)
     arc_name = Column(String(100), nullable=False)
     description = Column(Text)
-    start_episode = Column(Integer)
-    end_episode = Column(Integer)
+    start_episode_id = Column(Integer, ForeignKey("episode.episode_id"))
+    end_episode_id = Column(Integer, ForeignKey("episode.episode_id"))
 
     series = relationship("Series", back_populates="arcs")
-    episodes = relationship("Episode", back_populates="arc")
+    episodes = relationship(
+        "Episode",
+        back_populates="arc",
+        foreign_keys="Episode.arc_id"
+    )
     fights = relationship("Fight", back_populates="arc")
 
 
@@ -45,7 +49,11 @@ class Episode(Base):
     title = Column(String(150), nullable=False)
     synopsis = Column(Text)
 
-    arc = relationship("Arc", back_populates="episodes")
+    arc = relationship(
+        "Arc",
+        back_populates="episodes",
+        foreign_keys=[arc_id]
+    )
     fights_start = relationship(
         "Fight", back_populates="start_episode",
         foreign_keys="Fight.start_episode_id"
