@@ -1,0 +1,4 @@
+- Fix Character data
+    - Show clan name
+    - Show technique
+    - First Episode appearance
