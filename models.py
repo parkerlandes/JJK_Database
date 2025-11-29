@@ -111,6 +111,7 @@ class Character(Base):
 
     character_id = Column(Integer, primary_key=True, autoincrement=True)
     clan_id = Column(Integer, ForeignKey("clan.clan_id"))
+    clan = relationship("Clan", backref="members")
     name = Column(String(100), nullable=False)
     grade = Column(String(50))
     description = Column(Text)

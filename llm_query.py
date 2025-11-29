@@ -119,6 +119,10 @@ RULES:
 - DO NOT invent fields that do not exist.
 - ALWAYS include spaces between tokens.
 - Always compare names using LIKE '%text%' instead of '='
+- You MAY use JOINs.
+- You MAY check fight locations using `location.location_id`.
+- You MAY check fight participants using `fight_participant`.
+- You MAY check location names, cities, and countries.
 """
 
     model = genai.GenerativeModel(MODEL_NAME)

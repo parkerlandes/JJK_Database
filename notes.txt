@@ -1,4 +1,14 @@
 - Fix Character data
-    - Show clan name
-    - Show technique
-    - First Episode appearance
+    - Fix Episodes -> Characters Appearing to only be new appearances, not every character appearing that episode
+    - Edit domains
+    - Edit technique to assign it to a Clan
+
+    EDIT FUNCTIONALITY
+        - ALL
+    DELETE FUNCTIONALITY
+        - Arcs
+        - Episodes
+        - Domains
+        - Techniques
+        - Clans
+        - Locations
