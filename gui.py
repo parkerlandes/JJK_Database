@@ -381,23 +381,54 @@ elif page == "Fights":
 
     st.divider()
 
-    # ---------- ADD FIGHT ----------
+  # ---------- ADD FIGHT ----------
     st.subheader("Add Fight")
 
     fight_name = st.text_input("Fight Name")
+
+    # Select Arc
     arc_list = session.query(models.Arc).all()
     selected_arc = st.selectbox("Arc", [x.arc_name for x in arc_list])
     selected_arc_obj = session.query(models.Arc).filter_by(arc_name=selected_arc).first()
 
+    # Select Location
     loc_list = session.query(models.Location).all()
     selected_loc = st.selectbox("Location", [x.name for x in loc_list])
     selected_loc_obj = session.query(models.Location).filter_by(name=selected_loc).first()
 
-    start_ep = st.number_input("Start Episode", min_value=1)
-    end_ep = st.number_input("End Episode", min_value=1)
+    # Select Episode Range
+    start_ep = st.number_input("Start Episode ID", min_value=1)
+    end_ep = st.number_input("End Episode ID", min_value=1)
+
     summary = st.text_area("Summary")
 
+    # =============================
+    # SELECT PARTICIPANTS
+    # =============================
+
+    chars = session.query(models.Character).all()
+    char_names = [c.name for c in chars]
+
+    selected_participants = st.multiselect(
+        "Select characters who participated in the fight:",
+        char_names
+    )
+
+    # For each selected fighter, specify the outcome
+    outcome_map = {}
+    for p in selected_participants:
+        outcome = st.selectbox(
+            f"Outcome for {p}",
+            ["won", "lost", "draw", "unknown"],
+            key=f"outcome_{p}"
+        )
+        outcome_map[p] = outcome
+
+    # =============================
+    # CREATE FIGHT BUTTON
+    # =============================
     if st.button("Create Fight"):
+        # First create the fight
         new_f = models.Fight(
             name=fight_name,
             arc_id=selected_arc_obj.arc_id,
@@ -408,7 +439,20 @@ elif page == "Fights":
         )
         session.add(new_f)
         session.commit()
-        st.success(f"Fight '{fight_name}' added!")
+
+        # Then insert participants
+        for participant_name, outcome in outcome_map.items():
+            char_obj = session.query(models.Character).filter_by(name=participant_name).first()
+            fp = models.FightParticipant(
+                fight_id=new_f.fight_id,
+                character_id=char_obj.character_id,
+                outcome=outcome
+            )
+            session.add(fp)
+
+        session.commit()
+        st.success(f"Fight '{fight_name}' and participants added successfully!")
+
 
 # =======================
 # DOMAINS PAGE
